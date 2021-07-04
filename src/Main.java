@@ -1,5 +1,11 @@
 public class Main {
+
+    // Main method of the program
     public static void main(String[] args) {
-        System.out.println("Hello");
+
+        // Calling the InputWindow for GUI window
+        InputWindow window = new InputWindow();
+
     }
+
 }
