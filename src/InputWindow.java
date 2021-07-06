@@ -23,6 +23,7 @@ public class InputWindow extends JFrame implements ActionListener {
     int num;
     int key;
     int found;
+    public static int randomCounter = 0;
     public static int arrayCounter = -1;
     public static boolean status = false;
 
@@ -141,6 +142,7 @@ public class InputWindow extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
+        // Action for size combo box button
         if(e.getSource() == size){
             // Get the users desired size
             num = Integer.parseInt((String) size.getSelectedItem());
@@ -154,7 +156,11 @@ public class InputWindow extends JFrame implements ActionListener {
             panelComputation.add(areaComputation);
         }
 
+        // Actions for Random Button
         if(e.getSource() == random){
+            if(randomCounter != 0)
+                randomValues.clear();
+
             r = true;
             String displayRandom;
             for(int i=0;i<getNum();i++){
@@ -164,8 +170,11 @@ public class InputWindow extends JFrame implements ActionListener {
             Collections.sort(randomValues);
             displayRandom = randomValues.toString();
             inputNumbers.setText(displayRandom);
+
+            randomCounter++;
         }
 
+        // Action for enter button
         if(e.getSource() == enter){
             try {
                 key = Integer.parseInt(inputKey.getText());
@@ -188,7 +197,7 @@ public class InputWindow extends JFrame implements ActionListener {
                 ErrorWindow error = new ErrorWindow();
             }
         }
-
+        // Action for next button
         if(e.getSource() == right) {
             panelNumbers.removeAll();
             panelNumbers.revalidate();
@@ -213,6 +222,7 @@ public class InputWindow extends JFrame implements ActionListener {
 
         }
 
+        // Action for previous button
         if(e.getSource() == left){
             panelNumbers.removeAll();
             panelNumbers.revalidate();
@@ -227,7 +237,7 @@ public class InputWindow extends JFrame implements ActionListener {
 
         }
     }
-
+    // Display users given values for computation
     public void displayUserGiven(){
         panelNumbers.removeAll();
         panelNumbers.revalidate();
@@ -244,7 +254,7 @@ public class InputWindow extends JFrame implements ActionListener {
             panelNumbers.add(labelIndex);
         }
     }
-
+    // Display random values for computation
     public void displayRandomGiven(){
         panelNumbers.removeAll();
         panelNumbers.revalidate();
@@ -261,15 +271,6 @@ public class InputWindow extends JFrame implements ActionListener {
             panelNumbers.add(labelValues);
             panelNumbers.add(labelIndex);
         }
-    }
-
-    // nextButton displays
-    public void nextButton(){
-        panelNumbers.removeAll();
-        panelNumbers.revalidate();
-        frame.repaint();
-
-
     }
 
     // Change the background for borders of JLabel for indications
@@ -373,6 +374,7 @@ public class InputWindow extends JFrame implements ActionListener {
         panelNumbers.add(labelPosition);
     }
 
+    // Display the final answer and its index
     public void displayAnswer(String low, String high, String pos, String lowArr, String highArr, String k){
         panelComputation.removeAll();
         panelComputation.revalidate();
@@ -385,11 +387,11 @@ public class InputWindow extends JFrame implements ActionListener {
         panelComputation.add(areaComputation);
     }
 
+    // Display Not found if the input key is not inside the array
     public void displayNotFound(){
         panelComputation.removeAll();
         panelComputation.revalidate();
         frame.repaint();
-
 
         areaComputation.setText("Key not found inside the array!!");
         areaComputation.setBounds(30,0,500,200);
