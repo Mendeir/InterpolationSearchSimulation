@@ -45,6 +45,11 @@ public class InputWindow extends JFrame implements ActionListener {
     JPanel panelNumbers = new JPanel();
     JPanel panelArrows = new JPanel();
     JLabel labelValues;
+    JLabel labelIndex;
+    JLabel labelLow = new JLabel("Low",JLabel.CENTER);
+    JLabel labelHigh = new JLabel("High",JLabel.CENTER);
+    JLabel labelPosition = new JLabel("Position",JLabel.CENTER);
+    JLabel labelKey;
     JComboBox size = new JComboBox(sizes);
     JTextField inputNumbers = new JTextField("Enter Values");
     JTextField inputKey = new JTextField("Key");
@@ -55,6 +60,7 @@ public class InputWindow extends JFrame implements ActionListener {
     ImageIcon formula = new ImageIcon(Objects.requireNonNull(getClass().getResource("formulaT.png")));
     JLabel imageFormula = new JLabel(formula);
     JTextArea areaComputation = new JTextArea();
+    //JScrollPane scroll = new JScrollPane(panelNumbers);
 
 
     // Constructor
@@ -73,7 +79,8 @@ public class InputWindow extends JFrame implements ActionListener {
         //panelNumbers.setBackground(Color.PINK);
         panelNumbers.setLayout(null);
         panelArrows.setBounds(0,185,1000,150);
-        panelArrows.setBackground(Color.GRAY);
+        //panelArrows.setBackground(Color.GRAY);
+        panelArrows.setLayout(null);
         panelFormula.setBounds(0,350,400,250);
         panelComputation.setBounds(400,350,600,250);
         panelComputation.setLayout(null);
@@ -107,6 +114,8 @@ public class InputWindow extends JFrame implements ActionListener {
         areaComputation.setLineWrap(true);
         areaComputation.setWrapStyleWord(true);
 
+
+
         // frame visibility and components
         panelMenu.add(size);
         panelMenu.add(random);
@@ -117,7 +126,11 @@ public class InputWindow extends JFrame implements ActionListener {
         panelMenu.add(right);
         panelComputation.add(areaComputation);
         panelFormula.add(imageFormula);
+        panelArrows.add(labelLow);
+        panelArrows.add(labelHigh);
+        panelArrows.add(labelPosition);
         frame.add(panelMenu);
+        //frame.add(scroll,BorderLayout.CENTER);
         frame.add(panelNumbers);
         frame.add(panelArrows);
         frame.add(panelFormula);
@@ -148,7 +161,7 @@ public class InputWindow extends JFrame implements ActionListener {
             String displayRandom;
             for(int i=0;i<getNum();i++){
                 Random rand = new Random();
-                randomValues.add(rand.nextInt(15));
+                randomValues.add(rand.nextInt(100));
             }
             Collections.sort(randomValues);
             displayRandom = randomValues.toString();
@@ -156,26 +169,29 @@ public class InputWindow extends JFrame implements ActionListener {
         }
 
         if(e.getSource() == enter){
-            key = Integer.parseInt(inputKey.getText());
-            if(r){
-                displayRandomGiven();
-                logic.interpolationSearch(randomValues,key);
-            }else {
-                usersInput = inputNumbers.getText();
-                usersNumbers = usersInput.split(" ");
-                for (int i = 0; i < getNum(); i++) {
-                    values.add(Integer.parseInt(usersNumbers[i]));
+            try {
+                key = Integer.parseInt(inputKey.getText());
+                if (r) {
+                    displayRandomGiven();
+                    logic.interpolationSearch(randomValues, key);
+                } else {
+                    usersInput = inputNumbers.getText();
+                    usersNumbers = usersInput.split(" ");
+                    for (int i = 0; i < getNum(); i++) {
+                        values.add(Integer.parseInt(usersNumbers[i]));
+                    }
+                    displayUserGiven();
+                    logic.interpolationSearch(values, key);
                 }
-                displayUserGiven();
-                logic.interpolationSearch(values,key);
+                displayLow = logic.getStoredLowerBound();
+                displayHigh = logic.getStoredHigherBound();
+                displayPosition = logic.getStoredIndexPosition();
+            }catch (NumberFormatException er){
+                ErrorWindow error = new ErrorWindow();
             }
-            displayLow = logic.getStoredLowerBound();
-            displayHigh = logic.getStoredHigherBound();
-            displayPosition = logic.getStoredIndexPosition();
-
         }
 
-        if(e.getSource() == right){
+        if(e.getSource() == right) {
             panelNumbers.removeAll();
             panelNumbers.revalidate();
             panelComputation.removeAll();
@@ -183,10 +199,8 @@ public class InputWindow extends JFrame implements ActionListener {
             frame.repaint();
 
             arrayCounter++;
-            if(key != displayPosition.get(arrayCounter)){
-            displayBox(arrayCounter);
-
-
+            if (key != values.size()) {
+                displayBox(arrayCounter);
             }
 
 
@@ -208,11 +222,16 @@ public class InputWindow extends JFrame implements ActionListener {
         panelNumbers.removeAll();
         panelNumbers.revalidate();
         frame.repaint();
+
+        displayColorFormat();
         for (int i = 0; i < getNum(); i++) {
+            labelIndex = new JLabel(String.valueOf(i),JLabel.CENTER);
             labelValues = new JLabel(String.valueOf(values.get(i)),JLabel.CENTER);
             labelValues.setBounds(i*50,120,50,50);
+            labelIndex.setBounds(i*50,70,50,50);
             labelValues.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             panelNumbers.add(labelValues);
+            panelNumbers.add(labelIndex);
         }
     }
 
@@ -220,12 +239,17 @@ public class InputWindow extends JFrame implements ActionListener {
         panelNumbers.removeAll();
         panelNumbers.revalidate();
         frame.repaint();
+
+        displayColorFormat();
         for (int i = 0; i < getNum(); i++) {
+            labelIndex = new JLabel(String.valueOf(i),JLabel.CENTER);
             labelValues = new JLabel(String.valueOf(randomValues.get(i)),JLabel.CENTER);
             labelValues.setBounds(i*50,120,50,50);
+            labelIndex.setBounds(i*50,70,50,50);
             labelValues.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             labelValues.setOpaque(true);
             panelNumbers.add(labelValues);
+            panelNumbers.add(labelIndex);
         }
     }
 
@@ -240,7 +264,7 @@ public class InputWindow extends JFrame implements ActionListener {
 
     // Change the background for borders of JLabel for indications
     public void displayBox(int counter){
-
+        displayColorFormat();
         if(r) {
             for (int i = 0; i < getNum(); i++) {
 
@@ -312,6 +336,25 @@ public class InputWindow extends JFrame implements ActionListener {
         areaComputation.setLineWrap(true);
         areaComputation.setWrapStyleWord(true);
         panelComputation.add(areaComputation);
+    }
+
+    // Method for Color backgrounds
+    public void displayColorFormat(){
+        labelLow.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        labelLow.setBackground(Color.YELLOW);
+        labelLow.setOpaque(true);
+        labelLow.setBounds(50,10,50,50);
+        labelHigh.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        labelHigh.setBackground(Color.cyan);
+        labelHigh.setOpaque(true);
+        labelHigh.setBounds(150,10,50,50);
+        labelPosition.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        labelPosition.setBackground(Color.GREEN);
+        labelPosition.setOpaque(true);
+        labelPosition.setBounds(250,10,50,50);
+        panelNumbers.add(labelLow);
+        panelNumbers.add(labelHigh);
+        panelNumbers.add(labelPosition);
     }
 
     // Setters and Getters
