@@ -5,40 +5,40 @@ public class Logic {
     private ArrayList<Integer> storedLowerBound;
     private ArrayList<Integer> storedHigherBound;
     private ArrayList<Integer> storedIndexPosition;
-    private int indexCount;
+
 
     //Constructor
     Logic() {
         storedLowerBound = new ArrayList<Integer>();
         storedHigherBound = new ArrayList<Integer>();
         storedIndexPosition = new ArrayList<Integer>();
-        indexCount = 0;
+
     }
 
-    public int interpolationSearch(int[] givenSearchArray, int key) {
+    public int interpolationSearch(ArrayList<Integer> givenSearchArray, int key) {
         //Initializing variables
         int lowIndex = 0;
-        int highIndex = givenSearchArray.length - 1;
+        int highIndex = givenSearchArray.size() - 1;
         int indexPosition = 0;
 
         //Search until highIndex and lowIndex is equal to each other or the key is found
-        while (key >= givenSearchArray[lowIndex] && key <= givenSearchArray[highIndex] && givenSearchArray[highIndex] != givenSearchArray[lowIndex]) {
+        while (key >= givenSearchArray.get(lowIndex) && key <= givenSearchArray.get(highIndex) && !givenSearchArray.get(highIndex).equals(givenSearchArray.get(lowIndex))) {
 
             //Formula for calculating the position
-            indexPosition = lowIndex + ((key - givenSearchArray[lowIndex]) * (highIndex - lowIndex) / (givenSearchArray[highIndex] - givenSearchArray[lowIndex]));
+            indexPosition = lowIndex + ((key - givenSearchArray.get(lowIndex)) * (highIndex - lowIndex) / (givenSearchArray.get(highIndex) - givenSearchArray.get(lowIndex)));
 
             //Storing the results into the arraylist for future use
             storedLowerBound.add(lowIndex);
             storedHigherBound.add(highIndex);
             storedIndexPosition.add(indexPosition);
-            ++indexCount;
+
 
             //Check if the key is found
-            if (givenSearchArray[indexPosition] == key)
+            if (givenSearchArray.get(indexPosition) == key)
                 return indexPosition;
 
                 //If the current value is on the right side move the highIndex
-            else if (givenSearchArray[indexPosition] > key)
+            else if (givenSearchArray.get(indexPosition) > key)
                 highIndex = indexPosition - 1;
 
                 //If the current value is on the left side move the lowIndex
@@ -54,5 +54,17 @@ public class Logic {
         for (int counter : storedLowerBound) {
             System.out.println(counter + " ");
         }
+    }
+
+    public ArrayList<Integer> getStoredLowerBound() {
+        return storedLowerBound;
+    }
+
+    public ArrayList<Integer> getStoredHigherBound() {
+        return storedHigherBound;
+    }
+
+    public ArrayList<Integer> getStoredIndexPosition() {
+        return storedIndexPosition;
     }
 }
