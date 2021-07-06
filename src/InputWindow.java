@@ -22,8 +22,17 @@ public class InputWindow extends JFrame implements ActionListener {
     ArrayList<Integer> displayPosition;
     int num;
     int key;
-    public static int arrayCounter = 0;
+    public static int arrayCounter = -1;
     public static boolean status = false;
+
+    // JText area variables
+    String indexLow;
+    String indexHigh;
+    String indexPos ;
+    String valueLow;
+    String valueHigh;
+    String valueKey;
+
 
     // Calling PanelNumbers class for displaying the whole process
     //PanelNumbers panelNumbers = new PanelNumbers();
@@ -172,10 +181,12 @@ public class InputWindow extends JFrame implements ActionListener {
             panelComputation.removeAll();
             panelComputation.revalidate();
             frame.repaint();
+
+            arrayCounter++;
             if(key != displayPosition.get(arrayCounter)){
             displayBox(arrayCounter);
 
-            arrayCounter++;
+
             }
 
 
@@ -249,7 +260,14 @@ public class InputWindow extends JFrame implements ActionListener {
                 labelValues.setOpaque(true);
                 panelNumbers.add(labelValues);
             }
+            indexLow = String.valueOf(displayLow.get(counter));
+            indexHigh = String.valueOf(displayHigh.get(counter));
+            indexPos = String.valueOf(displayPosition.get(counter));
+            valueLow =  String.valueOf(randomValues.get(displayLow.get(counter)));
+            valueHigh = String.valueOf(randomValues.get(displayHigh.get(counter)));
+            valueKey = inputKey.getText();
 
+            displayArea(indexLow,indexHigh,indexPos,valueLow,valueHigh,valueKey);
         }else{
 
             for (int i = 0; i < getNum(); i++) {
@@ -270,6 +288,14 @@ public class InputWindow extends JFrame implements ActionListener {
                 labelValues.setOpaque(true);
                 panelNumbers.add(labelValues);
             }
+            indexLow = String.valueOf(displayLow.get(counter));
+            indexHigh = String.valueOf(displayHigh.get(counter));
+            indexPos = String.valueOf(displayPosition.get(counter));
+            valueLow =  String.valueOf(values.get(displayLow.get(counter)));
+            valueHigh = String.valueOf(values.get(displayHigh.get(counter)));
+            valueKey = inputKey.getText();
+
+            displayArea(indexLow,indexHigh,indexPos,valueLow,valueHigh,valueKey);
         }
 
     }
@@ -281,7 +307,7 @@ public class InputWindow extends JFrame implements ActionListener {
         frame.repaint();
 
 
-        areaComputation.setText("pos" + " = " + low + "+ ((" + k + "-" + " - " + lowArr + ") * (" + high + " - " + low + ") / (" + highArr + " - " + lowArr + "))" + "\n=" + pos);
+        areaComputation.setText("pos" + " = " + low + "+ ((" + k + "-"+ lowArr + ") * (" + high + " - " + low + ") / (" + highArr + " - " + lowArr + "))" + "\n=" + pos);
         areaComputation.setBounds(30,0,500,200);
         areaComputation.setLineWrap(true);
         areaComputation.setWrapStyleWord(true);
