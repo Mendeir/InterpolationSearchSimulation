@@ -2,20 +2,28 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Random;
+import java.lang.reflect.Array;
+import java.util.*;
 
 public class InputWindow extends JFrame implements ActionListener {
+
+    // Calling the Logic class for logic process
+    Logic logic = new Logic();
 
     // Instance variable declarations
     String [] sizes = {"1","2","3","4","5","6","7","8","9","10"};
     String usersInput;
-    String [] randomValues;
+    String [] usersNumbers;
+    ArrayList randomValues = new ArrayList<Integer>();
     boolean r = false;
-    String [] values;
+    ArrayList values = new ArrayList<Integer>();
+    ArrayList<Integer> displayLow;
+    ArrayList<Integer> displayHigh;
+    ArrayList<Integer> displayPosition;
     int num;
-    static int arrayCounter = 0;
+    int key;
+    public static int arrayCounter = 0;
+    public static boolean status = false;
 
     // Calling PanelNumbers class for displaying the whole process
     //PanelNumbers panelNumbers = new PanelNumbers();
@@ -37,7 +45,7 @@ public class InputWindow extends JFrame implements ActionListener {
     JButton right = new JButton(">");
     ImageIcon formula = new ImageIcon(Objects.requireNonNull(getClass().getResource("formulaT.png")));
     JLabel imageFormula = new JLabel(formula);
-    JTextArea areaComputation = new JTextArea("Computation");
+    JTextArea areaComputation = new JTextArea();
 
 
     // Constructor
@@ -53,7 +61,7 @@ public class InputWindow extends JFrame implements ActionListener {
         panelMenu.setLayout(null);
         panelMenu.setBackground(Color.white);
         panelNumbers.setBounds(0,60,1000,185);
-        panelNumbers.setBackground(Color.PINK);
+        //panelNumbers.setBackground(Color.PINK);
         panelNumbers.setLayout(null);
         panelArrows.setBounds(0,185,1000,150);
         panelArrows.setBackground(Color.GRAY);
@@ -116,38 +124,45 @@ public class InputWindow extends JFrame implements ActionListener {
         if(e.getSource() == size){
             // Get the users desired size
             num = Integer.parseInt((String) size.getSelectedItem());
-            randomValues = new String[num];
             setNum(num);
+            usersNumbers = new String[getNum()];
 
+            areaComputation.setText("pos" + " = " + "low" + "+ ((" + "k" + "-" + " - " + "lowArr" + ") * (" + "high" + " - " + "low + ) / (" + "highArr" + " - " + "lowArr" + "))" + "\n=" + "pos");
+            areaComputation.setBounds(30,0,500,200);
+            areaComputation.setLineWrap(true);
+            areaComputation.setWrapStyleWord(true);
+            panelComputation.add(areaComputation);
         }
 
         if(e.getSource() == random){
             r = true;
+            String displayRandom;
             for(int i=0;i<getNum();i++){
                 Random rand = new Random();
-                randomValues[i] = Integer.toString(rand.nextInt(15));
+                randomValues.add(rand.nextInt(15));
             }
-            inputNumbers.setText(Arrays.toString(randomValues));
-
+            Collections.sort(randomValues);
+            displayRandom = randomValues.toString();
+            inputNumbers.setText(displayRandom);
         }
 
         if(e.getSource() == enter){
-            values = new String[getNum()];
-
+            key = Integer.parseInt(inputKey.getText());
             if(r){
-                setValues(randomValues);
+                displayRandomGiven();
+                logic.interpolationSearch(randomValues,key);
             }else {
                 usersInput = inputNumbers.getText();
-                setValues(usersInput.split(" "));
+                usersNumbers = usersInput.split(" ");
+                for (int i = 0; i < getNum(); i++) {
+                    values.add(Integer.parseInt(usersNumbers[i]));
+                }
+                displayUserGiven();
+                logic.interpolationSearch(values,key);
             }
-
-            for(int i=0;i<getNum();i++){
-                labelValues = new JLabel(values[i],JLabel.CENTER);
-                labelValues.setBounds(i*50,120,50,50);
-                labelValues.setBorder(BorderFactory.createLineBorder(Color.red));
-                panelNumbers.add(labelValues);
-            }
-
+            displayLow = logic.getStoredLowerBound();
+            displayHigh = logic.getStoredHigherBound();
+            displayPosition = logic.getStoredIndexPosition();
 
         }
 
@@ -157,8 +172,12 @@ public class InputWindow extends JFrame implements ActionListener {
             panelComputation.removeAll();
             panelComputation.revalidate();
             frame.repaint();
+            if(key != displayPosition.get(arrayCounter)){
+            displayBox(arrayCounter);
 
             arrayCounter++;
+            }
+
 
         }
 
@@ -169,25 +188,104 @@ public class InputWindow extends JFrame implements ActionListener {
             panelComputation.revalidate();
             frame.repaint();
 
+            displayBox(arrayCounter);
             arrayCounter--;
+        }
+    }
+
+    public void displayUserGiven(){
+        panelNumbers.removeAll();
+        panelNumbers.revalidate();
+        frame.repaint();
+        for (int i = 0; i < getNum(); i++) {
+            labelValues = new JLabel(String.valueOf(values.get(i)),JLabel.CENTER);
+            labelValues.setBounds(i*50,120,50,50);
+            labelValues.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            panelNumbers.add(labelValues);
+        }
+    }
+
+    public void displayRandomGiven(){
+        panelNumbers.removeAll();
+        panelNumbers.revalidate();
+        frame.repaint();
+        for (int i = 0; i < getNum(); i++) {
+            labelValues = new JLabel(String.valueOf(randomValues.get(i)),JLabel.CENTER);
+            labelValues.setBounds(i*50,120,50,50);
+            labelValues.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            labelValues.setOpaque(true);
+            panelNumbers.add(labelValues);
         }
     }
 
     // nextButton displays
     public void nextButton(){
-        switch (arrayCounter){
-            case 0:
-                // first next
-                break;
+        panelNumbers.removeAll();
+        panelNumbers.revalidate();
+        frame.repaint();
 
-            case 1:
-                // next
-                break;
 
-            case 2:
-                // last next
-                break;
+    }
+
+    // Change the background for borders of JLabel for indications
+    public void displayBox(int counter){
+
+        if(r) {
+            for (int i = 0; i < getNum(); i++) {
+
+                labelValues = new JLabel(String.valueOf(randomValues.get(i)),JLabel.CENTER);
+                labelValues.setBounds(i*50,120,50,50);
+
+                if(i == displayLow.get(counter))
+                    labelValues.setBackground(Color.YELLOW);
+
+                if(i == displayHigh.get(counter))
+                    labelValues.setBackground(Color.BLUE);
+
+                if(i == displayPosition.get(counter))
+                    labelValues.setBackground(Color.GREEN);
+
+                labelValues.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                labelValues.setOpaque(true);
+                panelNumbers.add(labelValues);
+            }
+
+        }else{
+
+            for (int i = 0; i < getNum(); i++) {
+
+                labelValues = new JLabel(String.valueOf(values.get(i)),JLabel.CENTER);
+                labelValues.setBounds(i*50,120,50,50);
+
+                if(i == displayLow.get(counter))
+                    labelValues.setBackground(Color.YELLOW);
+
+                if(i == displayHigh.get(counter))
+                    labelValues.setBackground(Color.BLUE);
+
+                if(i == displayPosition.get(counter))
+                    labelValues.setBackground(Color.GREEN);
+
+                labelValues.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                labelValues.setOpaque(true);
+                panelNumbers.add(labelValues);
+            }
         }
+
+    }
+
+    // Display the content computation inside the text area
+    public void displayArea(String low, String high, String pos, String lowArr, String highArr, String k){
+        panelComputation.removeAll();
+        panelComputation.revalidate();
+        frame.repaint();
+
+
+        areaComputation.setText("pos" + " = " + low + "+ ((" + k + "-" + " - " + lowArr + ") * (" + high + " - " + low + ") / (" + highArr + " - " + lowArr + "))" + "\n=" + pos);
+        areaComputation.setBounds(30,0,500,200);
+        areaComputation.setLineWrap(true);
+        areaComputation.setWrapStyleWord(true);
+        panelComputation.add(areaComputation);
     }
 
     // Setters and Getters
@@ -199,13 +297,25 @@ public class InputWindow extends JFrame implements ActionListener {
         return this.num;
     }
 
-    public void setValues(String []v){
-        this.values = v;
-    }
-
-    public String[] getValues(){
-        return this.values;
-    }
 
 
 }
+/*
+                for (int i = 0; i < getNum(); i++) {
+
+                labelValues = new JLabel(String.valueOf(values.get(i)),JLabel.CENTER);
+                labelValues.setBounds(i*50,120,50,50);
+                labelValues.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                //labelValues.setBackground(Color.GREEN);
+                panelNumbers.add(labelValues);
+
+                }
+                for (int i = 0; i < getNum(); i++) {
+                    labelValues = new JLabel(String.valueOf(randomValues.get(i)),JLabel.CENTER);
+                    labelValues.setBounds(i*50,120,50,50);
+                    labelValues.setBorder(BorderFactory.createLineBorder(Color.red));
+                    //labelValues.setBackground(Color.GREEN);
+                    panelNumbers.add(labelValues);
+                }
+
+ */
