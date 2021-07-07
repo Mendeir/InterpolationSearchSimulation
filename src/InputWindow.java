@@ -380,7 +380,9 @@ public class InputWindow extends JFrame implements ActionListener {
         panelComputation.revalidate();
         frame.repaint();
 
-        areaComputation.setText("pos" + " = " + low + "+ ((" + k + "-"+ lowArr + ") * (" + high + " - " + low + ") / (" + highArr + " - " + lowArr + "))" + "\n=" + pos + "\n" + "Found at index " + pos);
+        int positionNo = Integer.parseInt(pos) + 1;
+
+        areaComputation.setText("pos" + " = " + low + "+ ((" + k + "-"+ lowArr + ") * (" + high + " - " + low + ") / (" + highArr + " - " + lowArr + "))" + "\n=" + pos + "\n" + "Found at position " + positionNo);
         areaComputation.setBounds(30,0,500,200);
         areaComputation.setLineWrap(true);
         areaComputation.setWrapStyleWord(true);
@@ -393,7 +395,7 @@ public class InputWindow extends JFrame implements ActionListener {
         panelComputation.revalidate();
         frame.repaint();
 
-        areaComputation.setText("Key not found inside the array!!");
+        areaComputation.setText("Key not found inside the array.");
         areaComputation.setBounds(30,0,500,200);
         areaComputation.setLineWrap(true);
         areaComputation.setWrapStyleWord(true);
