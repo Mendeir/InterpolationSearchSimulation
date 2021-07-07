@@ -289,7 +289,7 @@ public class InputWindow extends JFrame implements ActionListener {
                     labelValues.setBackground(Color.YELLOW);
 
                 if(i == displayHigh.get(counter))
-                    labelValues.setBackground(Color.BLUE);
+                    labelValues.setBackground(Color.CYAN);
 
                 if(i == displayPosition.get(counter))
                     labelValues.setBackground(Color.GREEN);
@@ -320,7 +320,7 @@ public class InputWindow extends JFrame implements ActionListener {
                     labelValues.setBackground(Color.YELLOW);
 
                 if(i == displayHigh.get(counter))
-                    labelValues.setBackground(Color.BLUE);
+                    labelValues.setBackground(Color.CYAN);
 
                 if(i == displayPosition.get(counter))
                     labelValues.setBackground(Color.GREEN);
@@ -362,7 +362,7 @@ public class InputWindow extends JFrame implements ActionListener {
         labelLow.setOpaque(true);
         labelLow.setBounds(50,10,50,50);
         labelHigh.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        labelHigh.setBackground(Color.BLUE);
+        labelHigh.setBackground(Color.CYAN);
         labelHigh.setOpaque(true);
         labelHigh.setBounds(150,10,50,50);
         labelPosition.setBorder(BorderFactory.createLineBorder(Color.BLACK));
