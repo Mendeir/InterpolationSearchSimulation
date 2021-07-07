@@ -11,7 +11,7 @@ public class InputWindow extends JFrame implements ActionListener {
     Logic logic = new Logic();
 
     // Instance variable declarations
-    String [] sizes = {"1","2","3","4","5","6","7","8","9","10"};
+    String [] sizes = {"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"};
     String usersInput;
     String [] usersNumbers;
     ArrayList randomValues = new ArrayList<Integer>();
