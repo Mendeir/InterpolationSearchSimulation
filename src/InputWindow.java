@@ -35,10 +35,6 @@ public class InputWindow extends JFrame implements ActionListener {
     String valueHigh;
     String valueKey;
 
-
-    // Calling PanelNumbers class for displaying the whole process
-    //PanelNumbers panelNumbers = new PanelNumbers();
-
     // Instantiation of objects for GUI
     JFrame frame = new JFrame("Interpolation Search");
     JPanel panelMenu = new JPanel();
